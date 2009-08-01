@@ -1,0 +1,8 @@
+--group
+--color
+--ignore-dir=var
+--type-set=smarty=.tpl
+--type-set=tpl=.tpl
+--type-set=dosini=.ini,.ini.append.php
+--type-set=ez=.tpl,.php,.ini
+--type-set=all=.tpl,.php,.ini

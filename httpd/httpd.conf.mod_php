@@ -1,0 +1,245 @@
+Listen 80
+Listen 8080
+ServerName localhost.example.org:8080
+ServerRoot /home/seltsam/var/
+DocumentRoot /home/seltsam/var/www/apache2/
+
+User seltsam
+Group seltsam
+
+MaxClients 50
+StartServers 5
+MinSpareServers 5
+MaxSpareServers 10
+MaxRequestsPerChild 50
+ErrorLog logs/apache2/error_log
+TransferLog logs/apache2/access_log
+HostnameLookups Off
+
+AcceptPathInfo On
+
+LoadModule mime_module /usr/lib/apache2/modules/mod_mime.so
+LoadModule dir_module /usr/lib/apache2/modules/mod_dir.so
+LoadModule alias_module /usr/lib/apache2/modules/mod_alias.so
+LoadModule authz_host_module  /usr/lib/apache2/modules/mod_authz_host.so
+LoadModule rewrite_module /usr/lib/apache2/modules/mod_rewrite.so
+LoadModule dav_module /usr/lib/apache2/modules/mod_dav.so
+LoadModule dav_fs_module /usr/lib/apache2/modules/mod_dav_fs.so
+LoadModule dav_svn_module /usr/lib/apache2/modules/mod_dav_svn.so
+LoadModule authz_svn_module /usr/lib/apache2/modules/mod_authz_svn.so
+LoadModule deflate_module /usr/lib/apache2/modules/mod_deflate.so
+LoadModule expires_module /usr/lib/apache2/modules/mod_expires.so
+LoadModule include_module /usr/lib/apache2/modules/mod_include.so
+
+<IfModule mod_alias.c>
+Alias /ez4 /home/seltsam/app/ezpublish-4.0.0/
+Alias /ez4-svn /home/seltsam/app/ezpublish-svn/
+Alias /ez4-web /home/seltsam/app/ezpublish-4.0.0-web/
+Alias /wiro /home/seltsam/app/sbcr/
+Alias /wiro-svn /home/seltsam/app/sbcr-svn/
+Alias /wiro-svn-release /home/seltsam/app/sbcr-svn-release/
+Alias /wp /home/seltsam/app/wordpress-svn/
+Alias /openflp-svn /home/seltsam/app/openflp-svn/
+Alias /mojavi /home/seltsam/app/mojavi/htdocs/
+Alias /scripts /home/seltsam/src/js/
+</IfModule>
+
+<Directory />
+Options FollowSymLinks
+AllowOverride All
+</Directory>
+
+<Directory /home/seltsam/app/openflp-0.1.1/>
+Order allow,deny
+Allow from all
+</Directory>
+
+<IfModule mod_dir.c>
+DirectoryIndex index.html index.php
+</IfModule>
+
+<IfModule mod_mime.c>
+TypesConfig /etc/mime.types
+</IfModule>
+
+<Location />
+AddOutputFilterByType DEFLATE text/html
+AddOutputFilterByType DEFLATE text/plain
+AddOutputFilterByType DEFLATE text/javascript
+AddOutputFilterByType DEFLATE text/css
+AddOutputFilterByType DEFLATE text/xml
+AddOutputFilterByType DEFLATE application/x-javascript
+AddOutputFilterByType DEFLATE application/xml
+AddOutputFilterByType DEFLATE application/rdf+xml
+</Location>
+
+<Location /info.mediajam.info/>
+Options +Includes
+AddOutputFilterByType INCLUDES text/html
+</Location>
+
+<IfModule mod_expires.c>
+ExpiresActive On
+ExpiresByType text/css "access plus 3 days"
+ExpiresByType text/javascript "access plus 3 days"
+ExpiresByType application/x-javascript "access plus 3 days"
+ExpiresByType application/x-shockwave-flash "access plus 3 days"
+ExpiresByType image/jpeg "access plus 3 days"
+ExpiresByType image/gif "access plus 3 days"
+ExpiresByType image/png "access plus 3 days"
+</IfModule>
+
+RewriteEngine On
+#すべてのリクエストに対して503ページを表示
+#RewriteRule /rewrite/503.html - [L]
+#RewriteRule ^.*$ /rewrite/503.html 
+RewriteRule ^/rewrite/([0-9]{4})/([0-9]{2})/([0-9]{2})/$ /rewrite/index.php?year=$1&month=$2&day=$3 [L]
+
+#動作しない 2008/7/1
+#LoadModule php4_module /usr/lib/apache2/modules/libphp4.so
+#<IfModule mod_php4.c>
+#AddType application/x-httpd-php .php .phtml .php3
+#AddType application/x-httpd-php-source .phps
+#</IfModule>
+
+LoadModule php5_module /usr/lib/apache2/modules/libphp5.so
+<IfModule mod_php5.c>
+AddType application/x-httpd-php .php .phtml .php3
+AddType application/x-httpd-php-source .phps
+</IfModule>
+
+<Location /svn>
+DAV svn
+SVNPath /home/seltsam/svn/
+</Location>
+
+NameVirtualHost *:80
+
+<VirtualHost *:80>
+  ServerName ezpress
+  DocumentRoot /home/seltsam/app/ezpublish-4.1.0alpha1/
+
+  DirectorySlash Off
+
+  RewriteEngine On
+  RewriteCond %{REQUEST_URI} !(\.gif)|(\.jpe?g)|(\.jpeg?)|(\.png)|(\.css)|(\.js)|(\.swf)|(\.php)|(\.html?)$ 
+  RewriteRule .* /index.php
+</VirtualHost>
+
+<VirtualHost *:80>
+  ServerName silverstripe
+#  ServerAlias admin.ezpress.trickstr
+  DocumentRoot /home/seltsam/app/silverstripe/
+</VirtualHost>
+
+<VirtualHost *:80>
+  ServerName wordpress
+#  ServerAlias admin.ezpress.trickstr
+  DocumentRoot /home/seltsam/app/wordpress-svn/
+</VirtualHost>
+
+<VirtualHost *:80>
+  ServerName ez41
+#  ServerAlias admin.ez41.trickstr
+  DocumentRoot /home/seltsam/app/ez41/
+
+  DirectorySlash Off
+
+  RewriteEngine On
+  RewriteCond %{REQUEST_URI} !(\.gif)|(\.jpe?g)|(\.jpeg?)|(\.png)|(\.css)|(\.js)|(\.swf)|(\.php)|(\.html?)$ 
+  RewriteRule .* /index.php
+</VirtualHost>
+
+<VirtualHost *:80>
+  ServerName ez411
+#  ServerAlias admin.ez4.trickstr
+  DocumentRoot /home/seltsam/app/ezpublish-4.1.0/
+
+  DirectorySlash Off
+
+  RewriteEngine On
+  RewriteCond %{REQUEST_URI} !(\.gif)|(\.jpe?g)|(\.jpeg?)|(\.png)|(\.css)|(\.js)|(\.swf)|(\.php)|(\.html?)$ 
+  RewriteRule .* /index.php
+</VirtualHost>
+
+<VirtualHost *:80>
+  ServerName ez4
+#  ServerAlias admin.ez.trickstr
+  DocumentRoot /home/seltsam/app/ez4/
+
+  DirectorySlash Off
+
+  RewriteEngine On
+  RewriteCond %{REQUEST_URI} !(\.gif)|(\.jpe?g)|(\.jpeg?)|(\.png)|(\.css)|(\.js)|(\.swf)|(\.php)|(\.html?)$ 
+  RewriteRule .* /index.php
+</VirtualHost>
+
+<VirtualHost *:80>
+  ServerName ezpublish-4.1.3
+#  ServerAlias admin.ez.trickstr
+  DocumentRoot /home/seltsam/app/ezpublish-4.1.3/
+
+  DirectorySlash Off
+
+  AcceptPathInfo On
+
+  RewriteEngine On
+  RewriteCond %{REQUEST_URI} !(\.gif)|(\.jpe?g)|(\.jpeg?)|(\.png)|(\.css)|(\.js)|(\.swf)|(\.php)|(\.html?)$ 
+  RewriteRule .* /index.php
+</VirtualHost>
+
+<VirtualHost *:80>
+  ServerName mss-seminar
+#  ServerAlias admin.ez.trickstr
+  DocumentRoot /home/seltsam/app/mss/
+
+  DirectorySlash Off
+
+  RewriteEngine On
+  RewriteCond %{REQUEST_URI} !(\.gif)|(\.jpe?g)|(\.jpeg?)|(\.png)|(\.css)|(\.js)|(\.swf)|(\.php)|(\.html?)$ 
+  RewriteRule .* /index.php
+</VirtualHost>
+
+<VirtualHost *:80>
+  ServerName svn
+  DocumentRoot /home/seltsam/var/svn/
+  DirectorySlash Off
+
+  <Location />
+    DAV svn
+    SVNParentPath /home/seltsam/var/svn/
+  </Location>
+
+</VirtualHost>
+
+<Location /svn/repos>
+  DAV svn
+  SVNPath /home/seltsam/var/svn/repos/
+</Location>
+
+# <VirtualHost *:8080>
+#   ServerName www.ez4.trickstr
+#   ServerAlias admin.ez4.trickstr
+#   DocumentRoot /home/seltsam/app/ezpublish-svn/
+# 
+#   <IfModule mod_rewrite.c>
+#     RewriteEngine On
+#     RewriteRule content/treemenu/? /index_treemenu.php [L]
+#     Rewriterule ^/var/storage/.* - [L]
+#     Rewriterule ^/var/[^/]+/storage/.* - [L]
+#     RewriteRule ^/var/cache/texttoimage/.* - [L]
+#     RewriteRule ^/var/[^/]+/cache/texttoimage/.* - [L]
+#     Rewriterule ^/design/[^/]+/(stylesheets|images|javascript)/.* - [L]
+#     Rewriterule ^/share/icons/.* - [L]
+#     Rewriterule ^/extension/[^/]+/design/[^/]+/(stylesheets|images|javascripts?)/.* - [L]
+#     Rewriterule ^/packages/styles/.+/(stylesheets|images|javascript)/[^/]+/.* - [L]
+#     RewriteRule ^/packages/styles/.+/thumbnail/.* - [L]
+#     RewriteRule ^/favicon\.ico - [L]
+#     RewriteRule ^/robots\.txt - [L]
+#     # Uncomment the following lines when using popup style debug.
+#     # RewriteRule ^/var/cache/debug\.html.* - [L]
+#     # RewriteRule ^/var/[^/]+/cache/debug\.html.* - [L]
+#     RewriteRule .* /index.php
+#   </IfModule>
+# </VirtualHost>
+# 

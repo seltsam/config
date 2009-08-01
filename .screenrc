@@ -1,0 +1,13 @@
+escape ^Tt
+vbell off
+hardstatus alwayslastline " %`%-w%{=b bw}%n %t%{-}%+w"
+autodetach on
+defutf8 on
+startup_message off
+#caption always "%{= wb} %-w%{=bu dr}%n %t%{-}%+w %= %{=b wk} [%l] %{=b wb}%y/%m/%d(%D) %{=b wm}%c"
+bind ^k kill
+
+defbce "on"
+term xterm-256color
+
+defscrollback 3000

@@ -1,0 +1,38 @@
+Listen 8080
+ServerName localhost.example.org:8080
+ServerRoot /home/seltsam/tmp
+DocumentRoot /var/www/
+
+User www-data
+Group www-data
+
+MaxClients 150
+StartServers 5
+MinSpareServers 5
+MaxSpareServers 10
+MaxRequestsPerChild 100
+ErrorLog logs/error_log
+TransferLog logs/access_log
+HostnameLookups Off
+
+LoadModule mime_module /usr/lib/apache2/modules/mod_mime.so
+LoadModule perl_module /usr/lib/apache2/modules/mod_perl.so
+LoadModule authz_host_module /usr/lib/apache2/modules/mod_authz_host.so
+
+<IfModule mod_mime.c>
+TypesConfig /etc/mime.types
+</IfModule>
+
+<IfModule mod_perl.c>
+
+  PerlModule ModPerl::Registry
+  <Location /pl/>
+    SetHandler perl-script
+    PerlHandler ModPerl::Registry
+    Options +ExecCGI
+    PerlSendHeader On
+    # require loading mod_authz_host
+    Allow from all 
+  </Location>
+  
+</IfModule>

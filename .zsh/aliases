@@ -1,0 +1,46 @@
+#
+# $URL: file:///home/ryo/svn/zshconf/trunk/aliases $
+# $Id: aliases 2 2006-02-27 16:31:19Z ryo $
+
+echo "Loading $HOME/.zsh/aliases"
+
+alias vim='/usr/local/bin/vim'
+alias view='/usr/local/bin/view'
+alias vimdiff='/usr/local/bin/vimdiff'
+alias vimtutour='/usr/local/bin/vimtutor'
+alias s='/usr/bin/screen'
+
+# eZ Publish
+alias cache='php ./bin/php/ezcache.php --clear-id=content,template,template-block'
+alias cacheini='php ./bin/php/ezcache.php --clear-id=content,template,template-block,ini,template-override'
+
+#alias emacs='emacs -nw'
+#alias php='/usr/local/bin/php';
+#alias phpsh='/usr/local/bin/php -a';
+
+#alias dir='ls -lF'
+#alias df='df -h'
+#alias du='du -ackh'
+#alias diff='diff -NBaur'
+#alias scp='scp -p'
+#alias lynx='lynx -cfg ~/.lynxrc'
+#alias swapinfo='swapinfo -k'
+#alias dvi2tty='dvi2tty -ql'
+
+# mistype recovery
+#alias ,,='cd ../'
+#alias //_='cd ../'
+#alias ...='cd ../'
+
+#alias myadmin='mysqladmin -u root -p'
+#alias vtop='vmstat -nmM -c1000 -w2'
+
+#unalias rm >& /dev/null
+#unalias cp >& /dev/null
+#unalias mv >& /dev/null
+
+#alias pu=pushd
+#alias po=popd
+#alias push='pushd +1'
+
+
